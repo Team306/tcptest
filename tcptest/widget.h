@@ -31,6 +31,7 @@ private slots:
     void serverget();
     void clientsend();
     void clientconnect();
+    void clientread();
 private:
     QTextEdit *servertext;
     QTextEdit *clienttext;

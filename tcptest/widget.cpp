@@ -41,9 +41,12 @@ void Widget::start_clicked(){
 }
 
 void Widget::newconnection(){
+    //servertext->setPlainText(tr("new connection"));
+    newclient = new QTcpSocket;
     newclient = server->nextPendingConnection();
     connect(newclient,SIGNAL(readyRead()),this,SLOT(serverget()));
-
+    QString str = "OK";
+    newclient->write(str.toStdString().c_str(),strlen(str.toStdString().c_str()));
 }
 
 void Widget::serverget(){
@@ -58,9 +61,16 @@ void Widget::clientconnect(){
     client = new QTcpSocket;
     client->abort();
     client->connectToHost("10.147.123.28",19999);
+    connect(client,SIGNAL(readyRead()),this,SLOT(clientread()));
 }
 
 void Widget::clientsend(){
     QString str = clienttext->toPlainText();
     client->write(str.toStdString().c_str(),strlen(str.toStdString().c_str()));
+}
+
+void Widget::clientread(){
+    QByteArray qba = client->readAll();
+    QString str = QVariant(qba).toString();
+    clienttext->setPlainText(str);
 }
